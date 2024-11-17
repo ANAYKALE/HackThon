@@ -1,0 +1,15 @@
+package daos;
+
+import java.util.List;
+
+import entities.review;
+import entities.user;
+
+public interface userDao extends AutoCloseable {
+	user findByEmail(String email) throws Exception;
+	List<review> DisplayAllReview() throws Exception;
+	List<review> DisplayMyReview(int id) throws Exception;
+	int save(user u) throws Exception;
+	int UpdateProfile(user u) throws Exception;
+	
+}

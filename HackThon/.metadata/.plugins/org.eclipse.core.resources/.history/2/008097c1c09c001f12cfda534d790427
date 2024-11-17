@@ -1,0 +1,59 @@
+package com.sunbeam;
+
+import java.util.List;
+import java.util.Scanner;
+
+import daos.userDao;
+import daos.userDaoImp;
+import entities.review;
+import entities.user;
+
+public class JDBC_Tester {
+	public static user curUser;
+public static void main(String[] args) {
+	Scanner sc=new Scanner(System.in);
+	
+//	try(userDao userDao=new userDaoImp())
+//	{
+//		System.out.println("Enter Email:");
+//		String email=sc.next();
+//		System.out.println("Enter Password");
+//		String pass=sc.next();
+//		
+//		user u=userDao.findByEmail(email);
+//		if(u!=null&&u.getPassword().equals(pass))
+//		{
+//			System.out.println("Login Successfully");
+//			//curUser=u;
+//			//userMenu();
+//		}
+//		else {
+//			System.out.println("Login Failed");
+//		}
+//		
+//	} catch (Exception e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	
+//	try(userDao userDao=new userDaoImp())
+//	{
+//		List<review> list=userDao.DisplayAllReview();
+//		list.forEach(System.out::println);
+//		
+//	} catch (Exception e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+	
+	try(userDao userDao=new userDaoImp())
+	{
+		List<review> list=userDao.DisplayMyReview(1);
+		list.forEach(System.out::println);
+		
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
+}

@@ -1,0 +1,7 @@
+package daos;
+
+import entities.user;
+
+public interface userDao extends AutoCloseable {
+	user findByEmail(String email) throws Exception;
+}

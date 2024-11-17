@@ -1,0 +1,133 @@
+package daos;
+
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import entities.review;
+import entities.user;
+
+public class userDaoImp extends Dao implements userDao {
+	private PreparedStatement smtFindByEmail;
+	private PreparedStatement smtDispAllReview;
+	private PreparedStatement smtDispMyReview;
+	private PreparedStatement smtSave;
+	private PreparedStatement smtUpdate;
+	
+	
+	public userDaoImp() throws Exception {
+	
+		// TODO Auto-generated constructor stub
+		String sqlFindByEmail="select * from users where email=?";
+		smtFindByEmail=con.prepareStatement(sqlFindByEmail);
+		String sqlDispAllRev="select * from reviews";
+		smtDispAllReview=con.prepareStatement(sqlDispAllRev);
+		String sqlDispMyRev="select * from reviews where user_id=?";
+		smtDispMyReview=con.prepareStatement(sqlDispMyRev);
+		String sqlSave = "INSERT INTO users (first_name, last_name, email, mobile,birth,password) VALUES(?, ?, ?, ?, ?, ?)";
+		smtSave = con.prepareStatement(sqlSave);
+		String sqlUpdateProfile="update user set first_name=?, last_name=?, email=?, mobile=?,birth=?,password=? where id=?";
+		smtUpdate=con.prepareStatement(sqlUpdateProfile);
+	}
+	public void close() throws Exception{
+		
+		smtFindByEmail.close();
+		
+	}
+	@Override
+	public user findByEmail(String email) throws Exception {
+		// TODO Auto-generated method stub
+		smtFindByEmail.setString(1, email);
+		try(ResultSet rs=smtFindByEmail.executeQuery()){
+			if(rs.next()) {
+			int id=rs.getInt("id");
+			String firstName=rs.getString("first_name");
+			String lastName=rs.getString("last_name");
+			email=rs.getString("email");
+			String mobile=rs.getString("mobile");;
+			Date birth = rs.getDate("birth");
+			String password = rs.getString("password");
+			
+			user u=new user(id, firstName, lastName, email, mobile, birth, password);
+			return u;
+		}
+			
+		}
+		return null;
+	}
+	@Override
+	public List<review> DisplayAllReview() throws Exception {
+		// TODO Auto-generated method stub
+		List<review> list=new ArrayList<review>();
+		try(ResultSet rs=smtDispAllReview.executeQuery())
+		{
+			while(rs.next())
+			{
+				int id=rs.getInt("id");
+				int movie_id=rs.getInt("movie_id");
+				String review=rs.getString("review");
+				int rating=rs.getInt("rating");
+				int user_id=rs.getInt("user_id");
+				String modified=rs.getString("modified");
+				
+				review r=new review(id, movie_id, review, rating, user_id, modified);
+				list.add(r);
+			}
+		}
+		
+		return list;
+		
+	}
+	@Override
+	public List<review> DisplayMyReview(int id1) throws Exception {
+		// TODO Auto-generated method stub
+		smtDispMyReview.setInt(1, id1);
+		List<review> list=new ArrayList<review>();
+		try(ResultSet rs=smtDispMyReview.executeQuery())
+		{
+			while(rs.next())
+			{
+				int id=rs.getInt("id");
+				int movie_id=rs.getInt("movie_id");
+				String review=rs.getString("review");
+				int rating=rs.getInt("rating");
+				int user_id=rs.getInt("user_id");
+				String modified=rs.getString("modified");
+				
+				review r=new review(id, movie_id, review, rating, user_id, modified);
+				list.add(r);
+			}
+		}
+		
+		return list;
+	}
+	@Override
+	public int save(user u) throws Exception {
+		// TODO Auto-generated method stub
+		smtSave.setString(1, u.getFirst_name());
+		smtSave.setString(2, u.getLast_name());
+		smtSave.setString(3, u.getEmail());
+		smtSave.setString(4, u.getMobile());
+		smtSave.setDate(5, u.getBirth());
+		smtSave.setString(6, u.getPassword());
+		int count=smtSave.executeUpdate();
+		return count;
+		
+	}
+	@Override
+	public int UpdateProfile(user u) throws Exception {
+		// TODO Auto-generated method stub
+		smtUpdate.setString(1, u.getFirst_name());
+		smtUpdate.setString(2, u.getLast_name());
+		smtUpdate.setString(3, u.getEmail());
+		smtUpdate.setString(4, u.getMobile());
+		smtUpdate.setDate(5, u.getBirth());
+		smtUpdate.setString(6, u.getPassword());
+		smtUpdate.setInt(7, u.getId());
+		int count=smtUpdate.executeUpdate();
+		return count;
+	}
+
+}
